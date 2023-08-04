@@ -1,7 +1,6 @@
 # Rock Paper Scissors Game
 import random
 from asci_art import rock, paper, scissors
-from enum import Enum
 
 choice = ["rock", "paper", "scissors"]
 
@@ -49,7 +48,7 @@ elif user_choice == 2:
         game_result = "draw"
 
 x = choice[computer_choice]
-print(f"Computer chose : " + computer_asci)
+print("Computer chose : " + computer_asci)
 y = choice[user_choice]
-print(f"You chose : " + user_asci)
+print("You chose : " + user_asci)
 print(f"Result is:  you {game_result}")
