@@ -22,7 +22,9 @@ travel_log1 = [
     },
 ]
 
+
 def add_new_country(country_visited: str, city_visited: list, total_visits: int):
+    """Add a new country to the travel_log."""
     travel_log1.append(
         {
             "country": country_visited,
@@ -30,6 +32,7 @@ def add_new_country(country_visited: str, city_visited: list, total_visits: int)
             "total_visits": total_visits,
         }
     )
+
 
 add_new_country("Russia", ["Moscow", "Saint Petersburg"], 2)
 
