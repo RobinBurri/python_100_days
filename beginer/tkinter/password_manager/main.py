@@ -26,8 +26,14 @@ def save():
     email_entered = email_entry.get()
     password_entered = password_entry.get()
 
-    if (len(website_entered.strip()) == 0 or len(email_entered.strip()) == 0 or len(password_entered.strip()) == 0):
-        messagebox.showerror(title="Oops", message="Please don't leave any fields empty!")
+    if (
+        len(website_entered.strip()) == 0
+        or len(email_entered.strip()) == 0
+        or len(password_entered.strip()) == 0
+    ):
+        messagebox.showerror(
+            title="Oops", message="Please don't leave any fields empty!"
+        )
         return
 
     is_ok = messagebox.askokcancel(
