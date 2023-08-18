@@ -2,6 +2,7 @@ import tkinter
 from tkinter import messagebox
 import random
 import string
+import json
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
@@ -16,9 +17,22 @@ def generate_password(lenght=10):
 
 
 def write_to_file(website_entered, email_entered, password_entered):
-    entry = f"{website_entered} | {email_entered} | {password_entered}\n"
-    with open("pswd.txt", "a", encoding="utf-8") as file:
-        file.write(entry)
+    new_entry = {
+        website_entered: {
+            "email": email_entered,
+            "password": password_entered,
+        }
+    }
+    data = {}
+    try:
+        with open("data.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        pass
+    finally:
+        with open("data.json", "w") as f:
+            data.update(new_entry)
+            json.dump(data, f, indent=4)
 
 
 def save():
@@ -36,15 +50,31 @@ def save():
         )
         return
 
-    is_ok = messagebox.askokcancel(
-        title=website_entered,
-        message=f"These are the details entered: \nEmail: {email_entered} "
-        f"\nPassword: {password_entered} \nIs it ok to save?",
-    )
-    if is_ok:
+    else:
         write_to_file(website_entered, email_entered, password_entered)
         website_entry.delete(0, tkinter.END)
         password_entry.delete(0, tkinter.END)
+
+
+def search():
+    website_entered = website_entry.get()
+    try:
+        with open("data.json", "r") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        messagebox.showerror(title="Oops", message="No data file found.")
+    else:
+        if website_entered in data:
+            found_email = data[website_entered]["email"]
+            found_password = data[website_entered]["password"]
+            messagebox.showinfo(
+                title=website_entered,
+                message=f"Email: {found_email}\nPassword: {found_password}",
+            )
+        else:
+            messagebox.showerror(
+                title="Oops", message=f"No details for {website_entered} exists."
+            )
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -65,9 +95,11 @@ email.grid(column=0, row=2)
 password = tkinter.Label(text="Password:")
 password.grid(column=0, row=3)
 
-website_entry = tkinter.Entry(width=38)
-website_entry.grid(column=1, row=1, columnspan=2)
+website_entry = tkinter.Entry(width=21)
+website_entry.grid(column=1, row=1)
 website_entry.focus()
+search_button = tkinter.Button(text="Search", command=search, width=12)
+search_button.grid(column=2, row=1)
 email_entry = tkinter.Entry(width=38)
 email_entry.grid(column=1, row=2, columnspan=2)
 email_entry.insert(0, "EzW2j@example.com")
