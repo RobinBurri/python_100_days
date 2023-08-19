@@ -12,7 +12,7 @@ parameters = {
 }
 
 
-response = requests.get(url=API_URL, params=parameters)
+response = requests.get(url=API_URL, params=parameters, timeout=5)
 response.raise_for_status()
 data = response.json()
 sunrise =  data["results"]["sunrise"]
