@@ -1,5 +1,8 @@
 import datetime as dt
 import os
+import smtplib
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 
 import requests
 from dotenv import load_dotenv
@@ -8,9 +11,6 @@ load_dotenv()
 STOCK = "SNDL"
 COMPANY_NAME = "SNDL Inc"
 API_KEY = os.getenv("ALPHA_VANTAGE_API_KEY")
-
-## STEP 1: Use https://www.alphavantage.co
-# When STOCK price increase/decreases by 5% between yesterday and the day before yesterday then print("Get News").
 
 ALPHA_URL = "https://www.alphavantage.co/query"
 alpha_params = {
@@ -39,20 +39,40 @@ if movement > 2 or movement < -2:
     print(f"Get News, the movement is {movement}%")
 
 
-## STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
+NEWS_API_KEY = os.getenv("NEWS_API_KEY")
+NEWS_URL = "https://newsapi.org/v2/everything"
 
-## STEP 3: Use https://www.twilio.com
-# Send a seperate message with the percentage change and each article's title and description to your phone number.
+today = dt.date.today().strftime("%Y-%m-%d")
+five_days_ago = str(dt.date.today() - dt.timedelta(days=5))
 
+news_params = {
+    "q": COMPANY_NAME,
+    "apiKey": NEWS_API_KEY,
+}
 
-# Optional: Format the SMS message like this:
-"""
-TSLA: 🔺2%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-or
-"TSLA: 🔻5%
-Headline: Were Hedge Funds Right About Piling Into Tesla Inc. (TSLA)?. 
-Brief: We at Insider Monkey have gone over 821 13F filings that hedge funds and prominent investors are required to file by the SEC The 13F filings show the funds' and investors' portfolio positions as of March 31st, near the height of the coronavirus market crash.
-"""
+news_response = requests.get(url=NEWS_URL, params=news_params, timeout=5)
+news_response.raise_for_status()
+news_data = news_response.json()
+# last 3 articles
+articles = news_data["articles"][:3]
+email_body = ""
+for article in articles:
+    email_body += article["title"].upper() + "\n"
+    email_body += article["description"] + "\n"
+    email_body += article["url"] + "\n\n"
+
+msg = MIMEMultipart()
+msg["Subject"] = f"{COMPANY_NAME} News | {movement}%"
+msg.attach(MIMEText(email_body, "plain"))
+
+MY_EMAIL = os.getenv("MY_EMAIL")
+MY_DESTINATION_EMAIL = os.getenv("MY_DESTINATION_EMAIL")
+MY_EMAIL_PASSWORD = os.getenv("MY_EMAIL_PASSWORD")
+if MY_EMAIL and MY_DESTINATION_EMAIL and MY_EMAIL_PASSWORD:
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(MY_EMAIL, MY_EMAIL_PASSWORD)
+        connection.sendmail(
+            from_addr=MY_EMAIL, to_addrs=MY_DESTINATION_EMAIL, msg=msg.as_string()
+        )
+        print("Email sent!")
