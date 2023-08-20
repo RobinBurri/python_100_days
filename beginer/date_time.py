@@ -1,7 +1,8 @@
 import datetime as dt
 
 now = dt.datetime.now()
-print(now)
+now_str = now.strftime("%Y-%m-%d %H:%M:%S")
+print(now_str.split(" ")[0])
 
 year = now.year
 print(year)
