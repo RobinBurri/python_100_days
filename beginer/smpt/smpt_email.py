@@ -16,22 +16,22 @@ with smtplib.SMTP("smtp.gmail.com", 587) as connection:
 # You have to security in your email account and turn on 2-step verification
 # create an app password and create a new app
 
-# MY_EMAIL = "appbreweryinfo@gmail.com"
-# MY_PASSWORD = "abcd1234()"
+MY_EMAIL = "appbreweryinfo@gmail.com"
+MY_PASSWORD = "abcd1234()"
 
-# now = dt.datetime.now()
-# weekday = now.weekday()
-# if weekday == 1:
-#     with open("quotes.txt") as quote_file:
-#         all_quotes = quote_file.readlines()
-#         quote = random.choice(all_quotes)
+now = dt.datetime.now()
+weekday = now.weekday()
+if weekday == 1:
+    with open("quotes.txt") as quote_file:
+        all_quotes = quote_file.readlines()
+        quote = random.choice(all_quotes)
 
-#     print(quote)
-#     with smtplib.SMTP("smtp.gmail.com") as connection:
-#         connection.starttls()
-#         connection.login(MY_EMAIL, MY_PASSWORD)
-#         connection.sendmail(
-#             from_addr=MY_EMAIL,
-#             to_addrs=MY_EMAIL,
-#             msg=f"Subject:Monday Motivation\n\n{quote}"
-#         )
+    print(quote)
+    with smtplib.SMTP("smtp.gmail.com") as connection:
+        connection.starttls()
+        connection.login(MY_EMAIL, MY_PASSWORD)
+        connection.sendmail(
+            from_addr=MY_EMAIL,
+            to_addrs=MY_EMAIL,
+            msg=f"Subject:Monday Motivation\n\n{quote}"
+        )
