@@ -1,0 +1,14 @@
+[tool.poetry]
+name = "python-100-days"
+version = "0.1.0"
+description = "udemy python 100 days course"
+authors = ["Robin Burri <robin@Robins-MacBook-Air.local>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
