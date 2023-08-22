@@ -11,6 +11,7 @@ pandas = "^2.0.3"
 requests = "^2.31.0"
 twilio = "^8.5.0"
 python-dotenv = "^1.0.0"
+bs4 = "^0.0.1"
 
 
 [build-system]
