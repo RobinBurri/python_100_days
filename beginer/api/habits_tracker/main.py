@@ -1,4 +1,4 @@
-import datetime as dt
+from datetime import datetime
 
 import requests
 
@@ -54,7 +54,7 @@ response = requests.put(
 # post a pixel
 pixel_endpoint = f"{graph_endpoint}/{graph_params['id']}"
 pixel_params = {
-    "date": dt.datetime.today().strftime("%Y%m%d"),
+    "date": datetime.today().strftime("%Y%m%d"),
     "quantity": "1",
 }
 # response = requests.post(url=pixel_endpoint, json=pixel_params, timeout=5, headers=headers)
