@@ -1,4 +1,5 @@
 import bs4
+import requests
 
 
 class bcolors:
@@ -13,11 +14,34 @@ class bcolors:
     UNDERLINE = "\033[4m"
 
 
-with open("website.html") as f:
-    content = f.read()
+response = requests.get("https://news.ycombinator.com/")
+response.raise_for_status()
+ycombinator_page = response.text
 
-soup = bs4.BeautifulSoup(content, "html.parser")
 
-all_anchor_tag = soup.find_all(name="a")
-for tag in all_anchor_tag:
-    print(bcolors.OKCYAN + tag.get("href") + bcolors.ENDC)
+soup = bs4.BeautifulSoup(ycombinator_page, "html.parser")
+
+all_title = soup.find_all(class_="titleline")
+article_upvote = [ int(score.getText().split(" ")[0]) for score in soup.find_all(class_="score", name="span")]
+article_title = []
+article_link = []
+for title in all_title:
+    a_tag = title.find("a")
+    title = a_tag.getText()
+    article_title.append(title)
+    link = a_tag.get("href")
+    article_link.append(link)
+
+result_list = []
+for title, link, score in zip(article_title, article_link, article_upvote):
+    entry = {"title": title, "link": link, "score": score}
+    result_list.append(entry)
+
+# Alternatively, you can achieve the same using a list comprehension
+# result_list = [{"title": title, "link": link, "score": score} for title, link, score in zip(titles, links, scores)]
+
+
+sorted_list = sorted(result_list, key=lambda x: x["score"], reverse=True)
+# Print the resulting list of dictionaries
+for entry in sorted_list:
+    print(entry)
