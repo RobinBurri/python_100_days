@@ -14,7 +14,7 @@ class bcolors:
     UNDERLINE = "\033[4m"
 
 
-response = requests.get("https://news.ycombinator.com/")
+response = requests.get("https://news.ycombinator.com/", timeout=5)
 response.raise_for_status()
 ycombinator_page = response.text
 
@@ -22,7 +22,10 @@ ycombinator_page = response.text
 soup = bs4.BeautifulSoup(ycombinator_page, "html.parser")
 
 all_title = soup.find_all(class_="titleline")
-article_upvote = [ int(score.getText().split(" ")[0]) for score in soup.find_all(class_="score", name="span")]
+article_upvote = [
+    int(score.getText().split(" ")[0])
+    for score in soup.find_all(class_="score", name="span")
+]
 article_title = []
 article_link = []
 for title in all_title:
