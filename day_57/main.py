@@ -1,11 +1,14 @@
-from flask import Flask
+from flask import Flask, render_template
+from helper import find_ages, find_genders
 
 app = Flask(__name__)
 
 
-@app.route("/")
-def hello():
-    return "Hello World!"
+@app.route("/<name>")
+def hello(name):
+    age = find_ages(name)
+    gender = find_genders(name)
+    return render_template("index.html", name=name, age=age, gender=gender)
 
 
 if __name__ == "__main__":
